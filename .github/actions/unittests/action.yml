@@ -1,0 +1,55 @@
+name: Run unit tests
+
+inputs:
+  python-version:
+    description: 'Python version to use'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install .python-version and ${{ inputs.python-version }}
+      uses: "gabrielfalcao/pyenv-action@v18"
+      with:
+        default: 3.7.17
+        versions: ${{ inputs.python-version }}
+
+    - name: Switch to .python-version
+      run: |
+        pyenv local "$(cat .python-version)"
+        if python -V | grep -q "$(cat .python-version)"; then
+          echo "Python version is '$(python -V)'"
+        else
+          echo "Python version is '$(python -V)', but should be '$(cat .python-version)'. Exiting workflow."
+          exit 1
+        fi
+      shell: bash
+
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+      shell: bash
+
+    - name: Setup virtual environment
+      run: |
+        pipenv --python ${{ inputs.python-version }} install --dev --deploy
+      shell: bash
+
+    - name: Verify virtual environment uses python version ${{ inputs.python-version }}
+      run: |
+        if pipenv run python -V | grep -q "${{ inputs.python-version }}"; then
+          echo "Python ${{ inputs.python-version }} is being used."
+        else
+          echo "Python ${{ inputs.python-version }} is not being used. Exiting workflow."
+          exit 1
+        fi
+      shell: bash
+
+    - name: Run unittests
+      run: |
+        PYTHONPATH=./src:./tests pipenv run pytest ./tests
+      shell: bash

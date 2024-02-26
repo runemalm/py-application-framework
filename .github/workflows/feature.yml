@@ -1,0 +1,25 @@
+name: Push on feature branch
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+
+jobs:
+  unittests:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.7.16, 3.8.18, 3.9.18, "3.10.13", 3.11.5, 3.12.0]
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run unittests
+        uses: ./.github/actions/unittests
+        with:
+          python-version: ${{ matrix.python-version }}
