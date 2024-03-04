@@ -3,7 +3,7 @@
 
 ## py-application-framework
 
-This is a simple and lightweight application framework library for python.
+An application framework library for Python.
 
 ### Features:
 

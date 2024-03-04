@@ -10,7 +10,7 @@ setup(
     author='David Runemalm, 2024',
     author_email='david.runemalm@gmail.com',
     description=
-    'A simple application framework library for python.',
+    'An application framework library for Python.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/runemalm/py-application-framework',
@@ -18,12 +18,17 @@ setup(
         "Documentation": "https://py-application-framework.readthedocs.io/en/latest/",
         "Bug Tracker": "https://github.com/runemalm/py-application-framework/issues",
     },
-    package_dir={'': '.'},
-    packages=find_packages(
-        where='.',
-        include=['application_framework*',],
-        exclude=['tests*',]
+    package_dir={'': 'src'},
+    packages = find_packages(
+        where = 'src',
+        include = ['application_framework*', ],
+        exclude = ['tests*', ]
     ),
+    entry_points={
+        'console_scripts': [
+            'application_framework = cli.main:main',
+        ],
+    },
     license='GNU General Public License v3.0',
     install_requires=[
 

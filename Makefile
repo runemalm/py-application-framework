@@ -37,21 +37,22 @@ test: ## run test suite
 
 .PHONY: build
 build: ## build the python package
-	python setup.py sdist bdist_wheel
+	pipenv run python setup.py sdist bdist_wheel
 
 .PHONY: clean
 clean: ## clean the build
 	python setup.py clean
-	rm -rf build dist py_dependency_injection.egg-info
+	rm -rf build dist py_application_framework.egg-info
+	rm -rf src/py_application_framework.egg-info
 	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
 
 .PHONY: upload-test
 upload-test: ## upload package to testpypi repository
-	TWINE_USERNAME=$(PYPI_USERNAME_TEST) TWINE_PASSWORD=$(PYPI_PASSWORD_TEST) twine upload --repository testpypi --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
+	TWINE_USERNAME=$(PYPI_USERNAME_TEST) TWINE_PASSWORD=$(PYPI_PASSWORD_TEST) pipenv run twine upload --repository testpypi --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
 
 .PHONY: upload
 upload: ## upload package to pypi repository
-	TWINE_USERNAME=$(PYPI_USERNAME) TWINE_PASSWORD=$(PYPI_PASSWORD) twine upload --skip-existing dist/*
+	TWINE_USERNAME=$(PYPI_USERNAME) TWINE_PASSWORD=$(PYPI_PASSWORD) pipenv run twine upload --skip-existing dist/*
 
 .PHONY: sphinx-quickstart
 sphinx-quickstart: ## run the sphinx quickstart
@@ -68,6 +69,30 @@ sphinx-rebuild: ## re-build the sphinx docs
 .PHONY: sphinx-autobuild
 sphinx-autobuild: ## activate autobuild of docs
 	pipenv run sphinx-autobuild docs docs/_build/html --watch $(SRC)
+
+################################################################################
+# CLI
+################################################################################
+
+.PHONY: cli-venv-create
+cli-venv-create: ## setup the cli virtual environment
+	python -m venv venv_cli
+
+.PHONY: cli-uninstall-editable
+cli-uninstall-editable: ## uninstall the tool from the virtual environment
+	source venv_cli/bin/activate && \
+	pip uninstall -y py-application-framework
+
+.PHONY: cli-install-editable
+cli-install-editable: ## install the tool in the virtual environment
+	source venv_cli/bin/activate && \
+	pip uninstall -y py-application-framework && \
+	pip install -e .
+
+.PHONY: cli-run
+cli-run: ## run the cli tool
+	source venv_cli/bin/activate && \
+	application_framework --help
 
 ################################################################################
 # PIPENV
