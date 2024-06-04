@@ -10,6 +10,7 @@ HOME := $(shell echo ~)
 PWD := $(shell pwd)
 SRC := $(PWD)/src
 TESTS := $(PWD)/tests
+DOCS := $(PWD)/docs
 
 # Load env file
 include env.make
@@ -29,7 +30,7 @@ help:
 
 .PHONY: test
 test: ## run test suite
-	PYTHONPATH=./src:./tests pipenv run pytest $(TESTS)
+	PYTHONPATH=$(SRC):$(TESTS) pipenv run pytest $(TESTS)
 
 ################################################################################
 # RELEASE
@@ -42,9 +43,10 @@ build: ## build the python package
 .PHONY: clean
 clean: ## clean the build
 	python setup.py clean
-	rm -rf build dist py_application_framework.egg-info
-	rm -rf src/py_application_framework.egg-info
-	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
+	rm -rf build dist
+	find . -type f -name '*.py[co]' -delete
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type d -name '*.egg-info' -exec rm -rf {} +
 
 .PHONY: upload-test
 upload-test: ## upload package to testpypi repository
@@ -64,11 +66,13 @@ sphinx-html: ## build the sphinx html
 
 .PHONY: sphinx-rebuild
 sphinx-rebuild: ## re-build the sphinx docs
-	make -C docs clean && make -C docs html
+	cd $(DOCS) && \
+	pipenv run make clean && pipenv run make html
 
 .PHONY: sphinx-autobuild
 sphinx-autobuild: ## activate autobuild of docs
-	pipenv run sphinx-autobuild docs docs/_build/html --watch $(SRC)
+	cd $(DOCS) && \
+	pipenv run sphinx-autobuild . _build/html --watch $(SRC)
 
 ################################################################################
 # CLI
@@ -102,12 +106,12 @@ cli-run: ## run the cli tool
 pipenv-install: ## setup the virtual environment
 	pipenv --python 3.7 install --dev
 
-.PHONY: pipenv-packages-install
-pipenv-packages-install: ## install a package (uses PACKAGE)
+.PHONY: pipenv-install-package
+pipenv-install-package: ## install a package (uses PACKAGE)
 	pipenv install $(PACKAGE)
 
-.PHONY: pipenv-packages-install-dev
-pipenv-packages-install-dev: ## install a dev package (uses PACKAGE)
+.PHONY: pipenv-install-package-dev
+pipenv-install-package-dev: ## install a dev package (uses PACKAGE)
 	pipenv install --dev $(PACKAGE)
 
 .PHONY: pipenv-packages-graph
@@ -118,12 +122,12 @@ pipenv-packages-graph: ## Check installed packages
 pipenv-requirements-generate: ## Check a requirements.txt
 	pipenv lock -r > requirements.txt
 
-.PHONY: pipenv-venv-activate
-pipenv-venv-activate: ## Activate the virtual environment
+.PHONY: pipenv-shell
+pipenv-shell: ## Activate the virtual environment
 	pipenv shell
 
-.PHONY: pipenv-venv-path
-pipenv-venv-path: ## Show the path to the venv
+.PHONY: pipenv-venv
+pipenv-venv: ## Show the path to the venv
 	pipenv --venv
 
 .PHONY: pipenv-lock-and-install
