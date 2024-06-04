@@ -10,7 +10,7 @@ setup(
     author='David Runemalm, 2024',
     author_email='david.runemalm@gmail.com',
     description=
-    'An application framework library for Python.',
+    'A prototypical application framework for Python.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/runemalm/py-application-framework',
