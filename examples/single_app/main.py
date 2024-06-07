@@ -14,7 +14,7 @@ def main():
         .set_environment_profile(env=os.getenv("APP_ENV", "development"))
         .add_yaml_file(path="config.common.yaml")
         .add_profiled_file(template="config.{profile}.yaml")
-        .add_prefixed_env_vars(prefix="CFG_", section_separator="__")
+        .add_prefixed_env_vars(prefix="CFG_", section_separator=".")
         .set_type_conversion('host.port', int)
         .set_type_conversion('app.port', int)
         .bind(Config)

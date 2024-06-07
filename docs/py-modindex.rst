@@ -1,3 +1,2 @@
-API reference
+API Reference
 =============
-
