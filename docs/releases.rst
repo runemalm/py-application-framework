@@ -6,7 +6,7 @@
 Version History
 ###############
 
-**1.0.0-alpha.1 (2024-06-xx)**
+**1.0.0-alpha.1 (2024-06-07)**
 
 - Initial alpha release.
 - ConfigBuilder: Introduces a flexible and extensible way to handle application configuration, supporting multiple sources such as YAML, JSON, INI, and environment variables, with type conversion and binding capabilities. Configurations can be overridden from multiple sources to provide maximum flexibility.
