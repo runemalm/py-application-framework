@@ -95,7 +95,7 @@ You can find the source code for `py-application-framework` on [GitHub](https://
 
 ## Release Notes
 
-### [1.0.0-alpha.1](https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.1) (2024-06-07)
+### [1.0.0-alpha.2](https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.2) (2024-06-07)
 
 - Initial alpha release.
 - ConfigBuilder: Introduces a flexible and extensible way to handle application configuration, supporting multiple sources such as YAML, JSON, INI, and environment variables, with type conversion and binding capabilities. Configurations can be overridden from multiple sources to provide maximum flexibility.
