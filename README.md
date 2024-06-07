@@ -1,3 +1,5 @@
+> **⚠️ Note:** This framework is still in the alpha release stage. Expect potential changes and improvements in future releases.
+
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 ![First Principles Software](https://img.shields.io/badge/Powered_by-First_Principles_Software-blue)
 [![Master workflow](https://github.com/runemalm/py-application-framework/actions/workflows/master.yml/badge.svg?branch=master)](https://github.com/runemalm/py-application-framework/actions/workflows/master.yml)
@@ -9,9 +11,6 @@ A prototypical application framework for Python.
 ### Features:
 
 - **Builder Pattern:** The framework incorporates the builder pattern to facilitate the assembly of a Host that accommodates multiple Applications. This approach ensures a structured and efficient setup process.
-- **Dependency Management:** Features an integrated dependency container that automates the management and injection of dependencies. This functionality streamlines object creation and configuration, enhancing simplicity and maintainability.
-- **Proven Design Principles:** Adopts established design patterns recognized by the Gang of Four, along with hexagonal architecture and domain-driven design approaches. These principles are foundational in crafting robust, maintainable code that stands the test of time.
-- **Simplicity First:** Prioritizes a straightforward approach to coding by deliberately avoiding complex features like asyncio and type hinting, fostering code that is both accessible and easy to understand.
 
 ## Compatibility
 
@@ -30,52 +29,56 @@ $ pip install py-application-framework
 Here's a quick example to get you started:
 
 ```python
-# file: main.py
+# examples/single_app/main.py
+
+import os
 
 from application_framework.application.builder import ApplicationBuilder
-from application_framework.architecture import Architecture
-from application_framework.execution_unit import ExecutionUnit
+from application_framework.config.builder import ConfigBuilder
 from application_framework.host.builder import HostBuilder
-from application_framework.infrastructure.builder import InfrastructureBuilder
+from application_framework.host.restart_policy import RestartPolicy
 
-if __name__ == '__main__':
+from examples.single_app.config import Config
 
-    infrastructure = InfrastructureBuilder() \
-        .add_proxy(80) \
-        .add_service(name="service_a", excecution_unit=ExecutionUnit.Process) \
-        .add_service(name="service_b", excecution_unit=ExecutionUnit.Thread) \
-        .add_service(name="service_c", excecution_unit=ExecutionUnit.Coroutine) \
-        .add_route(path="a/.*", service_name="service_a") \
-        .add_route(path="b/.*", service_name="service_b") \
-        .add_route(path="c/.*", service_name="service_c") \
-        .add_database() \
+
+def main():
+
+    config = (
+        ConfigBuilder()
+        .set_environment_profile(env=os.getenv("APP_ENV", "development"))
+        .add_yaml_file(path="config.common.yaml")
+        .add_profiled_file(template="config.{profile}.yaml")
+        .add_prefixed_env_vars(prefix="CFG_", section_separator="__")
+        .set_type_conversion('host.port', int)
+        .set_type_conversion('app.port', int)
+        .bind(Config)
         .build()
+    )
 
-    application_a = ApplicationBuilder() \
-        .set_architecture(Architecture.Hexagonal) \
-        .set_root_directory(".") \
-        .set_main_script("hexagonal_main.py") \
+    application = (
+        ApplicationBuilder()
+        .set_config(config)
+        .set_root_directory(".")
+        .use_entry_point("app:run")
+        .run_in_separate_process()
+        .add_http_route(path="/app/?.*", port=config.app.port)
+        .add_websocket_route(path="/app/ws/?.*", port=config.app.port + 9)
         .build()
+    )
 
-    application_b = ApplicationBuilder() \
-        .set_architecture(Architecture.Script) \
-        .set_root_directory(".") \
-        .set_main_script("main.py") \
+    host = (
+        HostBuilder()
+        .add_application(application)
+        .set_restart_policy(RestartPolicy.ExponentialBackoff)
+        .set_listening_port(config.host.port)
         .build()
+    )
 
-    application_c = ApplicationBuilder() \
-        .set_architecture(Architecture.Script) \
-        .set_root_directory(".") \
-        .set_main_script("async_main.py") \
-        .build()
+    host.run()
 
-    host = HostBuilder() \
-        .set_infrastructure(infrastructure) \
-        .add_application(app=application_a, service_name="service_a") \
-        .add_application(app=application_b, service_name="service_b") \
-        .add_application(app=application_c, service_name="service_c") \
-        .build() \
-        .run()
+
+if __name__ == "__main__":
+    main()
 ```
 
 ## Documentation
@@ -95,6 +98,6 @@ You can find the source code for `py-application-framework` on [GitHub](https://
 ### [1.0.0-alpha.1](https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.1) (2024-06-xx)
 
 - Initial alpha release.
-- Added Host Builder: The library includes a dependency container for managing object dependencies.
+- ConfigBuilder: Introduces a flexible and extensible way to handle application configuration, supporting multiple sources such as YAML, JSON, INI, and environment variables, with type conversion and binding capabilities. Configurations can be overridden from multiple sources to provide maximum flexibility.
 - Basic Documentation: An initial set of documentation is provided, giving users an introduction to the library.
 - License: Released under the GPL 3 license.
