@@ -8,7 +8,7 @@
 
 A prototypical application framework for Python.
 
-### Features:
+## Features:
 
 - **Builder Pattern:** The framework incorporates the builder pattern to facilitate the assembly of a Host that accommodates multiple Applications. This approach ensures a structured and efficient setup process.
 
@@ -48,7 +48,7 @@ def main():
         .set_environment_profile(env=os.getenv("APP_ENV", "development"))
         .add_yaml_file(path="config.common.yaml")
         .add_profiled_file(template="config.{profile}.yaml")
-        .add_prefixed_env_vars(prefix="CFG_", section_separator="__")
+        .add_prefixed_env_vars(prefix="CFG_", section_separator=".")
         .set_type_conversion('host.port', int)
         .set_type_conversion('app.port', int)
         .bind(Config)
@@ -101,3 +101,7 @@ You can find the source code for `py-application-framework` on [GitHub](https://
 - ConfigBuilder: Introduces a flexible and extensible way to handle application configuration, supporting multiple sources such as YAML, JSON, INI, and environment variables, with type conversion and binding capabilities. Configurations can be overridden from multiple sources to provide maximum flexibility.
 - Basic Documentation: An initial set of documentation is provided, giving users an introduction to the library.
 - License: Released under the GPL 3 license.
+
+---
+
+This README reflects the current state of the project and will be updated with new features and improvements in future releases. Stay tuned for updates!
