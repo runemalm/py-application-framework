@@ -1,5 +1,3 @@
-> **⚠️ Note:** This framework is still in the alpha release stage. Expect potential changes and improvements in future releases.
-
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 ![First Principles Software](https://img.shields.io/badge/Powered_by-First_Principles_Software-blue)
 [![Master workflow](https://github.com/runemalm/py-application-framework/actions/workflows/master.yml/badge.svg?branch=master)](https://github.com/runemalm/py-application-framework/actions/workflows/master.yml)
@@ -7,6 +5,8 @@
 ## py-application-framework
 
 A prototypical application framework for Python.
+
+> **⚠️ Note:** This framework is still in the alpha release stage. Expect potential changes and improvements in future releases.
 
 ### Features:
 
