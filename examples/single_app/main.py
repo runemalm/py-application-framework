@@ -11,14 +11,14 @@ def main():
 
     config = (
         ConfigBuilder()
-        .set_environment_profile(env=os.getenv("APP_ENV", "development"))
-        .add_yaml_file(path="config.common.yaml")
-        .add_profiled_file(template="config.{profile}.yaml")
-        .add_prefixed_env_vars(prefix="CFG_", section_separator=".")
-        .set_type_conversion('host.port', int)
-        .set_type_conversion('app.port', int)
-        .bind(Config)
-        .build()
+            .set_environment_profile(env=os.getenv("APP_ENV", "development"))
+            .add_yaml_file(path="config.common.yaml")
+            .add_profiled_file(template="config.{profile}.yaml")
+            .add_prefixed_env_vars(prefix="CFG_", section_separator=".")
+            .set_type_conversion('host.port', int)
+            .set_type_conversion('app.port', int)
+            .bind(Config)
+            .build()
     )
 
     application = (
@@ -34,10 +34,10 @@ def main():
 
     host = (
         HostBuilder()
-        .add_application(application)
-        .set_restart_policy(RestartPolicy.ExponentialBackoff)
-        .set_listening_port(config.host.port)
-        .build()
+            .set_config(config.host)
+            .add_application(application)
+            .set_listening_port(config.host.port)
+            .build()
     )
 
     host.run()
