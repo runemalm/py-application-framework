@@ -12,9 +12,9 @@ Version History
 - **Dependency Injection Support:** Now using a dependency container for improved dependency injection throughout the application.
 - **Bug Fix:** Fixed an issue with the default initialization of dataclass fields in Python 3.11 and above.
 
-**1.0.0-alpha.2 (2024-06-07)**
-
 `View release on GitHub <https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.3>`_
+
+**1.0.0-alpha.2 (2024-06-07)**
 
 - **New ConfigBuilder Class:** Introduced the ConfigBuilder class to handle application configuration flexibly and extensibly, supporting multiple sources such as YAML, JSON, INI, and environment variables, with type conversion and binding capabilities.
 - **Basic Documentation:** Provided an initial set of documentation to give users an introduction to the library.
