@@ -6,11 +6,11 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='py-application-framework',
-    version='1.0.0-alpha.2',
+    version='1.0.0-alpha.3',
     author='David Runemalm, 2024',
     author_email='david.runemalm@gmail.com',
     description=
-    'A prototypical application framework for Python.',
+    'An application framework for Python.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/runemalm/py-application-framework',
