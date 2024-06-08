@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -11,8 +11,8 @@ class AppConfig:
 
 @dataclass
 class Config:
-    host: HostConfig = HostConfig()
-    app: AppConfig = AppConfig()
+    host: HostConfig = field(default_factory=HostConfig)
+    app: AppConfig = field(default_factory=AppConfig)
 
     @classmethod
     def from_dict(cls, config_dict):
