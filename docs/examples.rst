@@ -50,5 +50,3 @@ This example shows how to set up a basic single application using the framework.
 
     if __name__ == "__main__":
         main()
-
-These examples cover some of the basic functionalities of the py-application-framework. For more advanced usage and examples, please refer to the documentation and the user guide.

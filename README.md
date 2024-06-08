@@ -6,7 +6,7 @@
 
 ## py-application-framework
 
-A prototypical application framework for Python.
+An application framework for Python.
 
 ## Features:
 
