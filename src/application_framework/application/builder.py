@@ -1,3 +1,5 @@
+import uuid
+
 from dependency_injection.container import DependencyContainer
 
 
@@ -10,7 +12,8 @@ class ApplicationBuilder:
         self.routes = []
         self.application_class = None
         self.restart_policy = None
-        self.container = DependencyContainer.get_instance()
+        container_name = f"container_{uuid.uuid4()}"
+        self.container = DependencyContainer.get_instance(container_name)
 
     def set_config(self, config):
         self.config = config
