@@ -117,9 +117,15 @@ class TestConfigBuilder(UnitTestCase):
                     self.assertEqual(config['debug'], expected_bool, f"Failed for value: '{str_value}'")
 
     def test_type_conversion_error(self):
-        self.builder.set_type_conversion('port', int)
-        with self.assertRaises(ValueError):
-            self.builder._apply_type_conversion('port', 'not_an_int')
+        yaml_content = """
+        port: not_an_int
+        """
+        with patch("builtins.open", mock_open(read_data=yaml_content)):
+            self.builder.add_yaml_file("config.test.yaml")
+            self.builder.set_type_conversion('port', int)
+            # Assert
+            with self.assertRaises(ValueError):
+                self.builder.build()
 
     def test_unsupported_profiled_file_type(self):
         with self.assertRaises(ValueError) as context:
