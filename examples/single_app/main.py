@@ -3,8 +3,11 @@ import os
 from application_framework.application.builder import ApplicationBuilder
 from application_framework.config.builder import ConfigBuilder
 from application_framework.host.builder import HostBuilder
-from application_framework.host.restart_policy import RestartPolicy
-from examples.single_app.config import Config
+from application_framework.monitoring.restart_policy import RestartPolicy
+
+from examples.single_app.config import AppConfig, Config
+from examples.single_app.src.application import Application
+from examples.single_app.src.greet_action import GreetAction
 
 
 def main():
@@ -23,13 +26,15 @@ def main():
 
     application = (
         ApplicationBuilder()
-        .set_config(config)
-        .set_root_directory(".")
-        .use_entry_point("app:run")
-        .run_in_separate_process()
-        .add_http_route(path="/app/?.*", port=config.app.port)
-        .add_websocket_route(path="/app/ws/?.*", port=config.app.port + 9)
-        .build()
+            .set_config(config.app)
+            .set_root_directory(".")
+            .run_in_separate_process()
+            .add_route(protocol="http", path="/app/?.*", port=config.app.port)
+            .set_application_class(Application)
+            .set_restart_policy(RestartPolicy.ExponentialBackoff)
+            .register_instance(AppConfig, config.app)
+            .register_transient(GreetAction)
+            .build()
     )
 
     host = (
