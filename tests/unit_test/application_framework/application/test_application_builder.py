@@ -1,3 +1,5 @@
+from dependency_injection.container import DependencyContainer
+
 from application_framework.application.base import ApplicationBase
 from unit_test.unit_test_case import UnitTestCase
 
@@ -43,18 +45,19 @@ class TestApplicationBuilder(UnitTestCase):
                 .register_transient(GreetAction)
         )
 
-        # Build the application
+        # Act
         application = application_builder.build()
 
-        # Assertions to ensure the application is built correctly
+        # Assert the application is built correctly
         self.assertIsInstance(application, Application)
         self.assertEqual(application.root_directory, "/some/path")
         self.assertEqual(application.name, "TestApp")
         self.assertTrue(application.run_in_separate_process)
         self.assertEqual(application.routes, [{"protocol": "http", "path": "/app/?.*", "port": 5000}])
         self.assertEqual(application.restart_policy, RestartPolicy.ExponentialBackoff)
+        self.assertIsInstance(application.container, DependencyContainer)
 
-        # Ensure dependencies are registered correctly
+        # Assert dependencies are registered correctly
         resolved_config = application.container.resolve(AppConfig)
         resolved_greet_action = application.container.resolve(GreetAction)
         self.assertEqual(resolved_config, config.app)
