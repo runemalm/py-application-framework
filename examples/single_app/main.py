@@ -28,6 +28,7 @@ def main():
         ApplicationBuilder()
             .set_config(config.app)
             .set_root_directory(".")
+            .set_name("MyApp")
             .run_in_separate_process()
             .add_route(protocol="http", path="/app/?.*", port=config.app.port)
             .set_application_class(Application)

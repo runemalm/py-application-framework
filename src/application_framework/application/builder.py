@@ -1,4 +1,3 @@
-from multiprocessing import Process
 from dependency_injection.container import DependencyContainer
 
 
@@ -6,6 +5,7 @@ class ApplicationBuilder:
     def __init__(self):
         self.config = None
         self.root_directory = None
+        self.name = None
         self._run_in_separate_process_flag = False
         self.routes = []
         self.application_class = None
@@ -18,6 +18,10 @@ class ApplicationBuilder:
 
     def set_root_directory(self, root_directory):
         self.root_directory = root_directory
+        return self
+
+    def set_name(self, name):
+        self.name = name
         return self
 
     def run_in_separate_process(self):
@@ -59,4 +63,10 @@ class ApplicationBuilder:
 
     def build(self):
         app = self.container.resolve(self.application_class)
+        app.set_root_directory(self.root_directory)
+        app.set_name(self.name)
+        app.set_run_in_separate_process(self._run_in_separate_process_flag)
+        app.routes = self.routes
+        app.set_restart_policy(self.restart_policy)
+        app.set_dependency_container(self.container)
         return app
