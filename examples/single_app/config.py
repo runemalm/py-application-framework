@@ -1,20 +1,21 @@
 from dataclasses import dataclass
 
+
 @dataclass
-class Host:
+class HostConfig:
     port: int = 80
 
 @dataclass
-class App:
+class AppConfig:
     port: int = 5000
 
 @dataclass
 class Config:
-    host: Host = Host()
-    app: App = App()
+    host: HostConfig = HostConfig()
+    app: AppConfig = AppConfig()
 
     @classmethod
     def from_dict(cls, config_dict):
         host_config = config_dict.get('host', {})
         app_config = config_dict.get('app', {})
-        return cls(host=Host(**host_config), app=App(**app_config))
+        return cls(host=HostConfig(**host_config), app=AppConfig(**app_config))
