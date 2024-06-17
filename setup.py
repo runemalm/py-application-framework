@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='py-application-framework',
-    version='1.0.0-alpha.3',
+    version='1.0.0-alpha.4',
     author='David Runemalm, 2024',
     author_email='david.runemalm@gmail.com',
     description=
