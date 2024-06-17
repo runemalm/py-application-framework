@@ -101,6 +101,10 @@ You can find the source code for `py-application-framework` on [GitHub](https://
 
 ## Release Notes
 
+### [1.0.0-alpha.4](https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.4) (2024-06-16)
+
+- **Internals Documentation:** Added comprehensive documentation detailing the internal architecture of the framework, including basic concepts, the executor model, and the use of processes, threads, and coroutines.
+
 ### [1.0.0-alpha.3](https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.3) (2024-06-08)
 
 - **New ApplicationBuilder Class:** Introduced the ApplicationBuilder class for a more streamlined and structured application setup.

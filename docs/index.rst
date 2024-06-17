@@ -20,6 +20,7 @@ Key Advantages
 - **Extensibility:** The framework is designed to be highly extensible, allowing it to evolve and adapt to new requirements and technologies over time.
 - **Maintainability:** By following best practices and using standard design patterns, the framework promotes maintainable code, reducing the long-term cost of ownership for applications built with it.
 - **Flexibility:** Supports multiple configuration sources (e.g., YAML, JSON, INI, environment variables) with the ability to override settings from different sources, providing maximum flexibility in configuration management.
+- **Dependency Management:** Supports dependency containers, facilitating dependency injection and inversion of control, which enhances modularity, testability, and overall flexibility in managing dependencies.
 
 .. userguide-docs:
 .. toctree::
@@ -28,12 +29,19 @@ Key Advantages
 
   userguide
 
-.. examples-docs:
+.. public-api-docs:
 .. toctree::
   :maxdepth: 1
-  :caption: Examples
+  :caption: Public API
 
-  examples
+  public_api
+
+.. private-api-docs:
+.. toctree::
+  :maxdepth: 1
+  :caption: Internals
+
+  private_api
 
 .. releases-docs:
 .. toctree::
