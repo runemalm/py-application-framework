@@ -6,7 +6,7 @@
 Version History
 ###############
 
-**1.0.0-alpha.4 (2024-06-16)**
+**1.0.0-alpha.4 (2024-06-17)**
 
 - **Internals Documentation:** Added comprehensive documentation detailing the internal architecture of the framework, including basic concepts, the executor model, and the use of processes, threads, and coroutines.
 
