@@ -29,12 +29,19 @@ Key Advantages
 
   userguide
 
-.. examples-docs:
+.. public-api-docs:
 .. toctree::
   :maxdepth: 1
-  :caption: Examples
+  :caption: Public API
 
-  examples
+  public_api
+
+.. private-api-docs:
+.. toctree::
+  :maxdepth: 1
+  :caption: Internals
+
+  private_api
 
 .. releases-docs:
 .. toctree::
