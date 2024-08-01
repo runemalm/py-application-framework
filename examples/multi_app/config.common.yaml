@@ -1,0 +1,4 @@
+host:
+  port: 80
+app:
+  port: 5000

@@ -4,7 +4,7 @@ from application_framework.config.builder import ConfigBuilder
 from application_framework.host.builder import HostBuilder
 from application_framework.service.application.builder import ApplicationBuilder
 from application_framework.supervisor.restart_strategy import RestartStrategy
-from application_framework.tasks.execution_mode import ExecutionMode
+from application_framework.service.execution_mode import ExecutionMode
 
 from examples.single_app.config import AppConfig, Config
 from examples.single_app.src.application import Application
@@ -25,9 +25,9 @@ def main():
             .build()
     )
 
-    async_app = (
+    application = (
         ApplicationBuilder()
-            .set_name("Async App")
+            .set_name("My Application")
             .set_root_directory(".")
             .add_route(protocol="http", path="/app/?.*", port=config.app.port)
             .set_application_class(Application)
@@ -38,37 +38,9 @@ def main():
             .build()
     )
 
-    thread_app = (
-        ApplicationBuilder()
-        .set_name("Thread App")
-        .set_root_directory(".")
-        .add_route(protocol="http", path="/app/?.*", port=config.app.port)
-        .set_application_class(Application)
-        .set_execution_mode(ExecutionMode.SEPARATE_THREAD)
-        .set_restart_strategy(RestartStrategy.FIXED_BACKOFF)
-        .register_instance(AppConfig, config.app)
-        .register_transient(GreetAction)
-        .build()
-    )
-
-    process_app = (
-        ApplicationBuilder()
-        .set_name("Process App")
-        .set_root_directory(".")
-        .add_route(protocol="http", path="/app/?.*", port=config.app.port)
-        .set_application_class(Application)
-        .set_execution_mode(ExecutionMode.SEPARATE_PROCESS)
-        .set_restart_strategy(RestartStrategy.FIXED_BACKOFF)
-        .register_instance(AppConfig, config.app)
-        .register_transient(GreetAction)
-        .build()
-    )
-
     host = (
         HostBuilder()
-            .add_application(async_app)
-            # .add_application(thread_app)
-            # .add_application(process_app)
+            .add_application(application)
             .set_listening_port(config.host.port)
             .build()
     )
