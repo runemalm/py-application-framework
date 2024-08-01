@@ -8,7 +8,7 @@ Version History
 
 **1.0.0-alpha.4 (2024-06-17)**
 
-- **Internals Documentation:** Added comprehensive documentation detailing the internal architecture of the framework, including basic concepts, the executor model, and the use of processes, threads, and coroutines.
+- **Internals Documentation:** Added documentation detailing the internal architecture of the framework, including basic concepts, the executor model, and the use of processes, threads, and coroutines.
 
 `View release on GitHub <https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.4>`_
 
