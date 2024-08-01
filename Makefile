@@ -9,6 +9,7 @@
 HOME := $(shell echo ~)
 PWD := $(shell pwd)
 SRC := $(PWD)/src
+EXAMPLES := $(PWD)/examples
 TESTS := $(PWD)/tests
 DOCS := $(PWD)/docs
 
@@ -142,3 +143,12 @@ pipenv-pip-freeze: ## Run pip freeze in the virtual environment
 .PHONY: pipenv-setup-sync
 pipenv-setup-sync: ## Sync dependencies between Pipfile and setup.py
 	pipenv run pipenv-setup sync
+
+################################################################################
+# EXAMPLES
+################################################################################
+
+.PHONY: examples-single-app-run
+examples-single-app-run: ## run the single-app example
+	cd $(EXAMPLES)/single_app && PYTHONPATH=$(SRC):$(PWD) pipenv run python main.py
+# 	PYTHONPATH=$(SRC):$(PWD) pipenv run python $(EXAMPLES)/single_app/main.py
