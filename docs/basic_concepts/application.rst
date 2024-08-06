@@ -107,7 +107,7 @@ Example:
 
    def run(self):
        self.crashed = False
-       while not self.cancellation_token.is_set():
+       while not self.cancellation_token.is_cancellation_requested:
            if self.crashed:
                print(f"[Application] Application has crashed!")
                time.sleep(1.0)
@@ -136,7 +136,7 @@ Example:
 
    async def run_async(self):
        self.crashed = False
-       while not self.cancellation_token.is_set():
+       while not self.cancellation_token.is_cancellation_requested:
            if self.crashed:
                print(f"[Application] Application has crashed!")
                await asyncio.sleep(1.0)
@@ -165,7 +165,9 @@ Example:
 
 .. code-block:: python
 
-   if self.cancellation_token.is_set():
-       break
+    while not self.cancellation_token.is_cancellation_requested:
+        # do the work ..
+    
+    print("Application instructed to stop!")
 
 Each of these sections provides detailed information on how to implement and manage the `Application` class within the framework, ensuring that it operates efficiently and effectively within your deployment environment.

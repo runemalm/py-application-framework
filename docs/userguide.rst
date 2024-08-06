@@ -144,7 +144,7 @@ Create a simple "Hello World" application:
 
         async def run_async(self):
             self.crashed = False
-            while not self.stop_event.is_set():
+            while not self.cancellation_token.is_cancellation_requested:
                 if self.crashed:
                     print(f"[Application] We have crashed..")
                     # Do nothing until framework takes action based on restart strategy.

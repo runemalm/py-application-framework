@@ -15,7 +15,7 @@ class Application(Service):
 
     def run(self):
         self.crashed = False
-        while not self.stop_event.is_set():
+        while not self.cancellation_token.is_cancellation_requested:
             if self.crashed:
                 print(f"[Application] Application has crashed!")
                 time.sleep(1.0)
@@ -39,7 +39,7 @@ class Application(Service):
 
     async def run_async(self):
         self.crashed = False
-        while not self.stop_event.is_set():
+        while not self.cancellation_token.is_cancellation_requested:
             if self.crashed:
                 print(f"[Application] Application has crashed!")
                 await asyncio.sleep(1.0)

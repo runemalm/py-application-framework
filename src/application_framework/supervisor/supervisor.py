@@ -10,6 +10,7 @@ class Supervisor(ActorBase):
     def __init__(self, loop, service_id, channels, restart_strategy):
         super().__init__()
         self.loop = loop
+        self.cancellation_token = None
         self.service_id = service_id
         self.channels = channels
         self.restart_strategy = restart_strategy
@@ -20,28 +21,28 @@ class Supervisor(ActorBase):
         self.stopped_event = asyncio.Event()
         self.crashed_event = asyncio.Event()
 
-    async def start_async(self, stop_event):
+    async def start_async(self, cancellation_token):
         """Starts the supervisor and initializes listener tasks."""
-        self.stop_event = stop_event
+        self.cancellation_token = cancellation_token
         self.host_listener_task = self.loop.create_task(self.run_host_listener_async())
         self.service_listener_task = self.loop.create_task(self.run_service_listener_async())
         await self.run_async()
 
     async def stop_async(self):
         """Signals the supervisor to stop."""
-        self.stop_event.set()
+        self.cancellation_token.cancel()
 
     async def run_host_listener_async(self):
         """Listens for messages from the host and handles them."""
-        while not self.stop_event.is_set():
+        while not self.cancellation_token.is_cancellation_requested:
             message = await self.channels.host_to_supervisor.receive_async(self.loop)
             if message.content == "stop":
                 print("[Supervisor] Received 'stop' message")
-                self.stop_event.set()
+                await self.stop_async()
 
     async def run_service_listener_async(self):
         """Listens for messages from the service and updates the supervisor's state."""
-        while not self.stop_event.is_set():
+        while not self.cancellation_token.is_cancellation_requested:
             message = await self.channels.service_to_supervisor.receive_async(self.loop)
             if message.content == "started":
                 self.starting_event.clear()
@@ -56,7 +57,7 @@ class Supervisor(ActorBase):
 
     async def run_async(self):
         """Main loop for the supervisor to manage the service."""
-        while not self.stop_event.is_set():
+        while not self.cancellation_token.is_cancellation_requested:
             try:
                 print("[Supervisor] Hello from supervisor")
                 if self.crashed_event.is_set():

@@ -1,7 +1,7 @@
 import asyncio
 import os
 import signal
-import threading
+
 from asyncio import CancelledError
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from multiprocessing import Manager
@@ -11,6 +11,8 @@ from application_framework.messaging.adapters.manager_queue import ManagerQueue
 from application_framework.messaging.channels import Channels
 from application_framework.messaging.message import Message
 from application_framework.messaging.adapters.zero_mq_queue import ZeroMQQueue
+from application_framework.service.cancellation_token_source import \
+    CancellationTokenSource
 from application_framework.supervisor.supervisor import Supervisor
 from application_framework.service.execution_mode import ExecutionMode
 
@@ -19,7 +21,7 @@ class Host:
     def __init__(self, loop):
         super().__init__()
         self.loop = loop
-        self.stop_event = asyncio.Event()
+        self.host_cancellation_token_source = CancellationTokenSource(True)
         self.thread_pool_executor = None
         self.process_pool_executor = None
         self.supervisor_tasks = []
@@ -83,7 +85,7 @@ class Host:
         self.loop.create_task(self.stop_async())
 
     async def stop_async(self):
-        self.stop_event.set()
+        self.host_cancellation_token_source.token.cancel()
 
     async def run_async(self):
         for config in self.service_configs:
@@ -109,9 +111,7 @@ class Host:
             else:
                 raise ValueError("Invalid execution mode specified")
 
-        while not self.stop_event.is_set():
-            await asyncio.sleep(1.0)
-
+        await self.host_cancellation_token_source.token.wait_cancellation_async()
         await self.cleanup_tasks()
 
     async def cleanup_tasks(self):
@@ -171,9 +171,10 @@ class Host:
     # Schedule Tasks
 
     def schedule_supervisor(self, service_id, channels, restart_strategy):
-        stop_event = asyncio.Event()
+        cancellation_token_source = CancellationTokenSource(True)
+        cancellation_token = cancellation_token_source.token
         supervisor = Supervisor(self.loop, service_id, channels, restart_strategy)
-        task = self.loop.create_task(supervisor.start_async(stop_event))
+        task = self.loop.create_task(supervisor.start_async(cancellation_token))
         self.supervisor_tasks.append(task)
 
     def schedule_service_task_async(self, service_config, channels):
@@ -199,27 +200,29 @@ class Host:
     @staticmethod
     def start_service(service_config, channels):
         try:
-            stop_event = threading.Event()
+            cancellation_token_source = CancellationTokenSource(False)
+            cancellation_token = cancellation_token_source.token
             container = DependencyContainer.get_instance(name=service_config.service_id)
             container.deserialize_state(service_config.serialized_state)
             service_instance = container.resolve(service_config.service_class)
             service_instance.set_service_id(service_config.service_id)
             service_instance.set_channels(channels)
-            service_instance.start(stop_event)
+            service_instance.start(cancellation_token)
         except Exception as e:
             print(f"Error in start_service: {e}")
 
     @staticmethod
     async def start_service_async(service_config, channels, loop):
         try:
-            stop_event = asyncio.Event()
+            cancellation_token_source = CancellationTokenSource(True)
+            cancellation_token = cancellation_token_source.token
             container = DependencyContainer.get_instance(name=service_config.service_id)
             container.deserialize_state(service_config.serialized_state)
             service_instance = container.resolve(service_config.service_class)
             service_instance.set_loop(loop)
             service_instance.set_service_id(service_config.service_id)
             service_instance.set_channels(channels)
-            await service_instance.start_async(stop_event)
+            await service_instance.start_async(cancellation_token)
         except Exception as e:
             print(f"Error in start_service_async: {e}")
 
