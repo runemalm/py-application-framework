@@ -27,12 +27,12 @@ def main():
 
     application = (
         ApplicationBuilder()
-            .set_name("My Application")
+            .set_name("Hello World")
             .set_root_directory(".")
-            .add_route(protocol="http", path="/app/?.*", port=config.app.port)
+            .add_route(protocol="http", path="/hello-world/?.*", port=config.app.port)
             .set_application_class(Application)
             .set_execution_mode(ExecutionMode.MAIN_EVENT_LOOP_ASYNC)
-            .set_restart_strategy(RestartStrategy.FIXED_BACKOFF)
+            .set_restart_strategy(RestartStrategy.EXPONENTIAL_BACKOFF)
             .register_instance(AppConfig, config.app)
             .register_transient(GreetAction)
             .build()

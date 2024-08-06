@@ -2,3 +2,4 @@ host:
   port: 80
 app:
   port: 5000
+  greeting: "Hello World!"

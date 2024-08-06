@@ -8,6 +8,7 @@ class HostConfig:
 @dataclass
 class AppConfig:
     port: int = 5000
+    greeting: str = "Hello World"
 
 @dataclass
 class Config:

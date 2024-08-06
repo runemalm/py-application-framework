@@ -1,8 +1,10 @@
 import time
 import asyncio
+
 from application_framework.service.service import Service
-from examples.single_app.config import AppConfig
 from application_framework.messaging.message import Message
+
+from examples.single_app.config import AppConfig
 
 
 class Application(Service):
