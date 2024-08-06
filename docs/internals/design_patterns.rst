@@ -3,13 +3,13 @@
    This library is currently in the alpha stage of development. Expect changes and improvements as we work towards a stable release.
    
 ########################
-Architecture
+Design Patterns
 ########################
 
 This section of the documentation details the internal architecture of the framework.
 
 
-High-Level Concepts
+Actor Model
 ------------------------
 
 These are the high-level concepts:
@@ -30,7 +30,7 @@ We employ the observer pattern for component notifications on state changes. For
    <div style="clear: both;"></div>
 
 
-Executors
+Event Loop
 ------------------------
 
 The Executor classes play a crucial role in executing the services under the supervision of the Supervisors. The framework includes several executor implementations, each tailored to specific requirements and use cases. These executors determine how services are executed, leveraging different combinations of processes, threads, and event loops.
@@ -52,7 +52,7 @@ The Executor classes play a crucial role in executing the services under the sup
    <div style="clear: both;"></div>
 
 
-Processes, threads and coroutines
+Observer Pattern
 ------------------------
 
 This framework fundamentally operates as a distributed system, where services observe one another through asynchronous events and react accordingly.
@@ -61,3 +61,21 @@ Threads enable the concurrent execution of the Host and its Supervisors. Dependi
 
 .. image:: _static/private_api/design/scheduling_and_concurrency.png
    :alt: Overview of the scheduling using processes, threads and tasks.
+
+
+Service Pattern
+------------------------
+
+Bla bla...
+
+
+Dependency Injection
+------------------------
+
+Bla bla...
+
+
+Builder Pattern
+------------------------
+
+Bla bla...

@@ -29,19 +29,40 @@ Key Advantages
 
   userguide
 
-.. public-api-docs:
+.. basic-concepts-docs:
 .. toctree::
   :maxdepth: 1
-  :caption: Public API
+  :caption: Basic Concepts
 
-  public_api
+  basic_concepts/host
+  basic_concepts/application
+  basic_concepts/execution_modes
+  basic_concepts/restart_strategies
 
-.. private-api-docs:
+.. core-systems-docs:
+.. toctree::
+  :maxdepth: 1
+  :caption: Core Systems
+
+  core_systems
+
+.. .. examples-docs:
+.. .. toctree::
+..   :maxdepth: 1
+..   :caption: Examples
+
+..   examples/single_application
+..   examples/multi_application
+
+.. internals-docs:
 .. toctree::
   :maxdepth: 1
   :caption: Internals
 
-  private_api
+  .. internals/design_philosophy
+  internals/the_internal_architecture
+  .. internals/how_to_submit
+  .. internals/design_patterns
 
 .. releases-docs:
 .. toctree::
@@ -50,11 +71,11 @@ Key Advantages
 
   releases
 
-.. apireference-docs:
-.. toctree::
-  :maxdepth: 1
-  :caption: API Reference
+.. .. apireference-docs:
+.. .. toctree::
+..   :maxdepth: 1
+..   :caption: API Reference
 
-  py-modindex
+..   py-modindex
 
 You can find the source code for `py-application-framework` in our `GitHub repository <https://github.com/runemalm/py-application-framework>`_.
