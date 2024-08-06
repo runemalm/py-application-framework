@@ -1,3 +1,4 @@
+
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 ![First Principles Software](https://img.shields.io/badge/Powered_by-First_Principles_Software-blue)
 [![Master workflow](https://github.com/runemalm/py-application-framework/actions/workflows/master.yml/badge.svg?branch=master)](https://github.com/runemalm/py-application-framework/actions/workflows/master.yml)
@@ -8,10 +9,18 @@
 
 An application framework for Python.
 
-## Features:
+## Purpose
 
-- **Builder Pattern:** The framework incorporates the builder pattern to facilitate the assembly of a Host that accommodates multiple Applications. This approach ensures a structured and efficient setup process.
-- **Dependency Injection:** Support for dependency injection using a dependency container.
+The purpose of the `py-application-framework` is to provide a flexible, easy-to-use, and extensible framework for building Python applications. By leveraging standard design patterns, this framework aims to cater to both beginners and professional developers, helping them to create robust applications with minimal effort. The framework's design choices emphasize simplicity, readability, and maintainability, making it an ideal choice for developers looking to adhere to best practices in software development.
+
+## Key Advantages
+
+- **Standard Design Patterns:** The framework employs well-known design patterns, making it intuitive for developers familiar with these patterns. This approach ensures that the framework is accessible to beginners while being powerful enough for professional developers.
+- **Ease of Use:** With a focus on simplicity and ease of use, `py-application-framework` allows developers to quickly set up and configure their applications without getting bogged down by complex setup procedures.
+- **Extensibility:** The framework is designed to be highly extensible, allowing it to evolve and adapt to new requirements and technologies over time.
+- **Maintainability:** By following best practices and using standard design patterns, the framework promotes maintainable code, reducing the long-term cost of ownership for applications built with it.
+- **Flexibility:** Supports multiple configuration sources (e.g., YAML, JSON, INI, environment variables) with the ability to override settings from different sources, providing maximum flexibility in configuration management.
+- **Dependency Management:** Supports dependency containers, facilitating dependency injection and inversion of control, which enhances modularity, testability, and overall flexibility in managing dependencies.
 
 ## Compatibility
 
@@ -34,10 +43,11 @@ Here's a quick example to get you started:
 
 import os
 
-from application_framework.application.builder import ApplicationBuilder
 from application_framework.config.builder import ConfigBuilder
 from application_framework.host.builder import HostBuilder
-from application_framework.monitoring.restart_policy import RestartPolicy
+from application_framework.service.application.builder import ApplicationBuilder
+from application_framework.supervisor.restart_strategy import RestartStrategy
+from application_framework.service.execution_mode import ExecutionMode
 
 from examples.single_app.config import AppConfig, Config
 from examples.single_app.src.application import Application
@@ -60,13 +70,12 @@ def main():
 
     application = (
         ApplicationBuilder()
-            .set_config(config.app)
+            .set_name("Hello World")
             .set_root_directory(".")
-            .set_name("MyApp")
-            .run_in_separate_process()
-            .add_route(protocol="http", path="/app/?.*", port=config.app.port)
+            .add_route(protocol="http", path="/hello-world/?.*", port=config.app.port)
             .set_application_class(Application)
-            .set_restart_policy(RestartPolicy.ExponentialBackoff)
+            .set_execution_mode(ExecutionMode.MAIN_EVENT_LOOP_ASYNC)
+            .set_restart_strategy(RestartStrategy.EXPONENTIAL_BACKOFF)
             .register_instance(AppConfig, config.app)
             .register_transient(GreetAction)
             .build()
@@ -74,13 +83,12 @@ def main():
 
     host = (
         HostBuilder()
-            .set_config(config.host)
             .add_application(application)
             .set_listening_port(config.host.port)
             .build()
     )
 
-    host.run()
+    host.start()
 
 
 if __name__ == "__main__":
@@ -100,6 +108,15 @@ For more advanced usage and examples, please visit our [readthedocs](https://py-
 You can find the source code for `py-application-framework` on [GitHub](https://github.com/runemalm/py-application-framework).
 
 ## Release Notes
+
+### [1.0.0-alpha.5](https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.5) (2024-08-06)
+
+- **New Host Builder Class:** Introduced the Host Builder class for improved host configuration and management.
+- **Restart Strategies:** Introduced restart strategies to handle application crashes, enhancing reliability and stability.
+- **Execution Modes:** Introduced execution modes allowing the application to run in separate thread, process or the event loop. Both asynchronous and synchronous support.
+- **Cancellation Token Pattern:** Implemented the cancellation token pattern to enable graceful stopping of applications.
+- **Documentation Updates:** Added more documentation on the basic concepts of the framework. Introduced a comprehensive "Getting Started" guide to help new users quickly onboard.
+- **Refactored Internals Architecture:** Introduced several significant changes, including a clearer expression of the actor model. Refactored actors into coroutines and utilized the event loop in a more idiomatic manner. Simplified code design, including removal of the **`Executor`** classes.
 
 ### [1.0.0-alpha.4](https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.4) (2024-06-17)
 

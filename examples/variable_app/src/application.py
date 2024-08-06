@@ -1,10 +1,8 @@
 import time
 import asyncio
-
 from application_framework.service.service import Service
-from application_framework.messaging.message import Message
-
 from examples.single_app.config import AppConfig
+from application_framework.messaging.message import Message
 
 
 class Application(Service):
@@ -15,7 +13,7 @@ class Application(Service):
 
     def run(self):
         self.crashed = False
-        while not self.cancellation_token.is_cancellation_requested:
+        while not self.stop_event.is_set():
             if self.crashed:
                 print(f"[Application] Application has crashed!")
                 time.sleep(1.0)
@@ -39,7 +37,7 @@ class Application(Service):
 
     async def run_async(self):
         self.crashed = False
-        while not self.cancellation_token.is_cancellation_requested:
+        while not self.stop_event.is_set():
             if self.crashed:
                 print(f"[Application] Application has crashed!")
                 await asyncio.sleep(1.0)

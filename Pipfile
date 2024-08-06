@@ -14,7 +14,7 @@ sphinx-rtd-theme = "2.0.0"
 sphinx-autobuild = "2021.3.14"
 sphinxcontrib-napoleon = "0.7"
 wheel = "0.41.2"
-transitions = "*"
+pyzmq = "26.0.3"
 
 [requires]
 python_version = ">=3.7"

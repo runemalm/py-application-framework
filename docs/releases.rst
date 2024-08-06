@@ -6,6 +6,17 @@
 Version History
 ###############
 
+**1.0.0-alpha.5 (2024-08-06)**
+
+- **New Host Builder Class:** Introduced the Host Builder class for improved host configuration and management.
+- **Restart Strategies:** Introduced restart strategies to handle application crashes, enhancing reliability and stability.
+- **Execution Modes:** Introduced execution modes allowing the application to run in separate thread, process or the event loop. Both asynchronous and synchronous support.
+- **Cancellation Token Pattern:** Implemented the cancellation token pattern to enable graceful stopping of applications.
+- **Documentation Updates:** Added more documentation on the basic concepts of the framework. Introduced a comprehensive "Getting Started" guide to help new users quickly onboard.
+- **Refactored Internals Architecture:** Introduced several significant changes, including a clearer expression of the actor model. Refactored actors into coroutines and utilized the event loop in a more idiomatic manner. Simplified code design, including removal of the **`Executor`** classes.
+
+`View release on GitHub <https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.5>`_
+
 **1.0.0-alpha.4 (2024-06-17)**
 
 - **Internals Documentation:** Added comprehensive documentation detailing the internal architecture of the framework, including basic concepts, the executor model, and the use of processes, threads, and coroutines.

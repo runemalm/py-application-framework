@@ -2,14 +2,11 @@
 
    This library is currently in the alpha stage of development. Expect changes and improvements as we work towards a stable release.
 
-########################
-Examples
-########################
+#######################
+Single-Application Host
+#######################
 
-Single application setup
-------------------------
-
-This example shows how to set up a basic single application using the framework.
+This example shows how to build and run a single application host.
 
 .. code-block:: python
     
@@ -44,9 +41,9 @@ This example shows how to set up a basic single application using the framework.
 
         application = (
             ApplicationBuilder()
-                .set_name("My Application")
+                .set_name("Hello World")
                 .set_root_directory(".")
-                .add_route(protocol="http", path="/app/?.*", port=config.app.port)
+                .add_route(protocol="http", path="/hello-world/?.*", port=config.app.port)
                 .set_application_class(Application)
                 .set_execution_mode(ExecutionMode.MAIN_EVENT_LOOP_ASYNC)
                 .set_restart_strategy(RestartStrategy.FIXED_BACKOFF)

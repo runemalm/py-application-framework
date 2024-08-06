@@ -1,9 +1,10 @@
 import os
 
-from application_framework.application.builder import ApplicationBuilder
 from application_framework.config.builder import ConfigBuilder
 from application_framework.host.builder import HostBuilder
-from application_framework.monitoring.restart_policy import RestartPolicy
+from application_framework.service.application.builder import ApplicationBuilder
+from application_framework.supervisor.restart_strategy import RestartStrategy
+from application_framework.service.execution_mode import ExecutionMode
 
 from examples.single_app.config import AppConfig, Config
 from examples.single_app.src.application import Application
@@ -26,13 +27,12 @@ def main():
 
     application = (
         ApplicationBuilder()
-            .set_config(config.app)
+            .set_name("Hello World")
             .set_root_directory(".")
-            .set_name("MyApp")
-            .run_in_separate_process()
-            .add_route(protocol="http", path="/app/?.*", port=config.app.port)
+            .add_route(protocol="http", path="/hello-world/?.*", port=config.app.port)
             .set_application_class(Application)
-            .set_restart_policy(RestartPolicy.ExponentialBackoff)
+            .set_execution_mode(ExecutionMode.MAIN_EVENT_LOOP_ASYNC)
+            .set_restart_strategy(RestartStrategy.EXPONENTIAL_BACKOFF)
             .register_instance(AppConfig, config.app)
             .register_transient(GreetAction)
             .build()
@@ -40,13 +40,12 @@ def main():
 
     host = (
         HostBuilder()
-            .set_config(config.host)
             .add_application(application)
             .set_listening_port(config.host.port)
             .build()
     )
 
-    host.run()
+    host.start()
 
 
 if __name__ == "__main__":
