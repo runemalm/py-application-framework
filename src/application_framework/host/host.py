@@ -93,7 +93,7 @@ class Host:
             self.channels[config.service_id] = channels
 
             # Schedule supervisor
-            self.schedule_supervisor(config.service_id, channels)
+            self.schedule_supervisor(config.service_id, channels, config.restart_strategy)
 
             # Schedule service
             if config.execution_mode == ExecutionMode.MAIN_EVENT_LOOP_ASYNC:
@@ -170,9 +170,9 @@ class Host:
 
     # Schedule Tasks
 
-    def schedule_supervisor(self, service_id, channels):
+    def schedule_supervisor(self, service_id, channels, restart_strategy):
         stop_event = asyncio.Event()
-        supervisor = Supervisor(self.loop, service_id, channels)
+        supervisor = Supervisor(self.loop, service_id, channels, restart_strategy)
         task = self.loop.create_task(supervisor.start_async(stop_event))
         self.supervisor_tasks.append(task)
 

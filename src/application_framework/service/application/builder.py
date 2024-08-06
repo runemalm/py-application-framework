@@ -3,6 +3,7 @@ import uuid
 from dependency_injection.container import DependencyContainer
 
 from application_framework.service.service_config import ServiceConfig
+from application_framework.supervisor.restart_strategy import RestartStrategy
 
 
 class ApplicationBuilder:
@@ -13,8 +14,7 @@ class ApplicationBuilder:
         self.execution_mode = None
         self.routes = []
         self.application_class = None
-        self.restart_strategy = None
-        self.custom_backoff = None
+        self.restart_strategy = RestartStrategy()
         self.container = DependencyContainer.get_instance(f"{self.service_id}_initial")
 
     def set_root_directory(self, root_directory):
@@ -38,8 +38,20 @@ class ApplicationBuilder:
         self.container.register_singleton(self.application_class)
         return self
 
-    def set_restart_strategy(self, restart_strategy):
-        self.restart_strategy = restart_strategy
+    def set_restart_strategy(self, strategy, fixed_backoff_time=5, max_backoff_time=60, max_jitter=5):
+        self.restart_strategy = RestartStrategy(strategy, fixed_backoff_time, max_backoff_time, max_jitter)
+        return self
+
+    def set_fixed_backoff_time(self, fixed_backoff_time):
+        self.fixed_backoff_time = fixed_backoff_time
+        return self
+
+    def set_max_backoff_time(self, max_backoff_time):
+        self.max_backoff_time = max_backoff_time
+        return self
+
+    def set_max_jitter(self, max_jitter):
+        self.max_jitter = max_jitter
         return self
 
     def register_instance(self, *args, **kwargs):
@@ -67,7 +79,6 @@ class ApplicationBuilder:
             service_class=self.application_class,
             execution_mode=self.execution_mode,
             restart_strategy=self.restart_strategy,
-            custom_backoff=self.custom_backoff,
             serialized_state=self.container.serialize_state(),
             root_directory=self.root_directory,
             name=self.name,
