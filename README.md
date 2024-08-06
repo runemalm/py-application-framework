@@ -1,3 +1,4 @@
+
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 ![First Principles Software](https://img.shields.io/badge/Powered_by-First_Principles_Software-blue)
 [![Master workflow](https://github.com/runemalm/py-application-framework/actions/workflows/master.yml/badge.svg?branch=master)](https://github.com/runemalm/py-application-framework/actions/workflows/master.yml)
@@ -34,10 +35,11 @@ Here's a quick example to get you started:
 
 import os
 
-from application_framework.application.builder import ApplicationBuilder
 from application_framework.config.builder import ConfigBuilder
 from application_framework.host.builder import HostBuilder
-from application_framework.monitoring.restart_policy import RestartPolicy
+from application_framework.service.application.builder import ApplicationBuilder
+from application_framework.supervisor.restart_strategy import RestartStrategy
+from application_framework.service.execution_mode import ExecutionMode
 
 from examples.single_app.config import AppConfig, Config
 from examples.single_app.src.application import Application
@@ -60,13 +62,12 @@ def main():
 
     application = (
         ApplicationBuilder()
-            .set_config(config.app)
+            .set_name("Hello World")
             .set_root_directory(".")
-            .set_name("MyApp")
-            .run_in_separate_process()
-            .add_route(protocol="http", path="/app/?.*", port=config.app.port)
+            .add_route(protocol="http", path="/hello-world/?.*", port=config.app.port)
             .set_application_class(Application)
-            .set_restart_policy(RestartPolicy.ExponentialBackoff)
+            .set_execution_mode(ExecutionMode.MAIN_EVENT_LOOP_ASYNC)
+            .set_restart_strategy(RestartStrategy.EXPONENTIAL_BACKOFF)
             .register_instance(AppConfig, config.app)
             .register_transient(GreetAction)
             .build()
@@ -74,13 +75,12 @@ def main():
 
     host = (
         HostBuilder()
-            .set_config(config.host)
             .add_application(application)
             .set_listening_port(config.host.port)
             .build()
     )
 
-    host.run()
+    host.start()
 
 
 if __name__ == "__main__":
@@ -103,7 +103,7 @@ You can find the source code for `py-application-framework` on [GitHub](https://
 
 ### [1.0.0-alpha.4](https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.4) (2024-06-17)
 
-- **Internals Documentation:** Added documentation detailing the internal architecture of the framework, including basic concepts, the executor model, and the use of processes, threads, and coroutines.
+- **Internals Documentation:** Added comprehensive documentation detailing the internal architecture of the framework, including basic concepts, the executor model, and the use of processes, threads, and coroutines.
 
 ### [1.0.0-alpha.3](https://github.com/runemalm/py-application-framework/releases/tag/v1.0.0-alpha.3) (2024-06-08)
 
